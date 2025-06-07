@@ -1,0 +1,119 @@
+{% extends 'track/base.html' %}
+
+{% block title %}Invoices{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h2>Invoices</h2>
+    </div>
+</div>
+
+<div class="alert alert-info">
+    <strong>Next Invoice Date:</strong> {{ next_invoice_date|date:"Y-m-d" }} |
+    <strong>Total Hours:</strong> {{ latest_invoice.total_hours|floatformat:2 }} |
+    <strong>Total Amount:</strong> ${{ latest_invoice.total_amount|floatformat:2 }}
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Client Summary</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Client</th>
+                                <th>Hours</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for stat in client_stats %}
+                            <tr>
+                                <td>{{ stat.client__name }}</td>
+                                <td>{{ stat.total_hours|floatformat:2 }}</td>
+                                <td>${{ stat.total_amount|floatformat:2 }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="3" class="text-center">No data available.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Worker Summary</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Worker</th>
+                                <th>Hours</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for stat in worker_stats %}
+                            <tr>
+                                <td>{{ stat.worker__name }}</td>
+                                <td>{{ stat.total_hours|floatformat:2 }}</td>
+                                <td>${{ stat.total_amount|floatformat:2 }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="3" class="text-center">No data available.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="card-title mb-0">Invoice History</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Total Hours</th>
+                        <th>Total Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for invoice in invoices %}
+                    <tr>
+                        <td>{{ invoice.date|date:"Y-m-d" }}</td>
+                        <td>{{ invoice.total_hours|floatformat:2 }}</td>
+                        <td>${{ invoice.total_amount|floatformat:2 }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" class="text-center">No invoices available.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

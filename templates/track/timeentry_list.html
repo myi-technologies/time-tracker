@@ -1,0 +1,103 @@
+{% extends 'track/base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}Time Entries{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h2>Time Entries</h2>
+    </div>
+    <div class="col text-end">
+        <a href="{% url 'track:timeentry_create' %}" class="btn btn-primary">New Entry</a>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="card-title mb-0">Filters</h5>
+    </div>
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-3">
+                {{ filter_form.client.label_tag }}
+                {{ filter_form.client|add_class:"form-control" }}
+            </div>
+            <div class="col-md-3">
+                {{ filter_form.worker.label_tag }}
+                {{ filter_form.worker|add_class:"form-control" }}
+            </div>
+            <div class="col-md-2">
+                {{ filter_form.date_from.label_tag }}
+                {{ filter_form.date_from|add_class:"form-control" }}
+            </div>
+            <div class="col-md-2">
+                {{ filter_form.date_to.label_tag }}
+                {{ filter_form.date_to|add_class:"form-control" }}
+            </div>
+            <div class="col-md-2">
+                {{ filter_form.invoice_date.label_tag }}
+                {{ filter_form.invoice_date|add_class:"form-control" }}
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary">Apply Filters</button>
+                <a href="{% url 'track:timeentry_list' %}" class="btn btn-secondary">Clear</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <div class="row align-items-center">
+            <div class="col">
+                <h5 class="card-title mb-0">Current Entries</h5>
+            </div>
+            <div class="col-auto">
+                <strong>Total Hours:</strong> {{ total_hours|floatformat:2 }} |
+                <strong>Total Amount:</strong> ${{ total_amount|floatformat:2 }}
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Client</th>
+                        <th>Worker</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                        <th>Duration (h)</th>
+                        <th>Amount</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in entries %}
+                    <tr>
+                        <td>{{ entry.date|date:"Y-m-d" }}</td>
+                        <td>{{ entry.client.name }}</td>
+                        <td>{{ entry.worker.name }}</td>
+                        <td>{{ entry.start_time|time:"H:i" }}</td>
+                        <td>{{ entry.end_time|time:"H:i" }}</td>
+                        <td>{{ entry.get_duration|floatformat:2 }}</td>
+                        <td>${{ entry.get_amount|floatformat:2 }}</td>
+                        <td>{{ entry.description|truncatechars:30 }}</td>
+                        <td>
+                            <a href="{% url 'track:timeentry_update' entry.pk %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="9" class="text-center">No entries found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
